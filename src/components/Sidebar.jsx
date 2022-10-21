@@ -86,7 +86,7 @@ const Sidebar = () => {
             </svg>
           </span>
           <span className="app-brand-text demo menu-text fw-bolder ms-2">
-            Sneat
+            Collections
           </span>
         </a>
         <a
@@ -100,16 +100,16 @@ const Sidebar = () => {
       <ul className="menu-inner py-1 ps ps--active-y">
         {/* Dashboard */}
         <li className="menu-item">
-          <a href="index.html" className="menu-link">
+          <a href="/" className="menu-link">
             <i className="menu-icon tf-icons bx bx-home-circle" />
             <div data-i18n="Analytics">Dashboard</div>
           </a>
         </li>
 
         <li className="menu-item">
-          <a href="index.html" className="menu-link">
-            <i className="menu-icon tf-icons bx bx-home-circle" />
-            <div data-i18n="Analytics">Payments</div>
+          <a href="/list" className="menu-link">
+            <i className="menu-icon tf-icons bx bx-user-circle" />
+            <div data-i18n="Analytics">Houses</div>
           </a>
         </li>
        
