@@ -35,11 +35,11 @@ console.log("data", data);
   };
 
   return (
-    <div className="container-xxl" style={{ width: "35%" }}>
+    <div className="container-xxl">
       <div className="authentication-wrapper authentication-basic container-p-y">
         <div className="authentication-inner">
           {/* Register Card */}
-          <div className="card">
+          <div className="card mx-md-5">
             <div className="card-body">
               {/* Logo */}
               <div className="app-brand justify-content-center">

@@ -30,11 +30,11 @@ const Login = () => {
 
 
   return (
-    <div className="container" style={{ width: "35%" }}>
+    <div className="container">
       <div className="authentication-wrapper authentication-basic container-p-y">
         <div className="authentication-inner">
           {/* Register */}
-          <div className="card">
+          <div className="card mx-md-5">
             <div className="card-body">
               {/* Logo */}
               <div className="app-brand justify-content-center">
@@ -122,12 +122,12 @@ const Login = () => {
                     </svg>
                   </span>
                   <span className="app-brand-text demo text-body fw-bolder">
-                    Sneat
+                    Levy
                   </span>
                 </a>
               </div>
               {/* /Logo */}
-              <h4 className="mb-2">Welcome to Sneat! 👋</h4>
+              <h4 className="mb-2">Welcome to Levy! 👋</h4>
               <p className="mb-4">
                 Please sign-in to your account and start the adventure
               </p>
