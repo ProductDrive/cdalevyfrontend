@@ -1,8 +1,36 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogin } from "../../features/user/userActions";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
+  const { loading, userInfo, error, success } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+
+  // redirect authenticated user to profile screen
+  useEffect(() => {
+    if (userInfo !== null) {
+      navigate("/");
+    } else{
+      navigate("/login");
+    }
+  }, [userInfo]);
+
+  const submitForm = (data) => {
+    dispatch(userLogin(data));
+    if(success){
+      toast("Login successfully", "success");
+    }
+  };
+
+
   return (
-    <div className="container" style={{width:'35%'}}>
+    <div className="container" style={{ width: "35%" }}>
       <div className="authentication-wrapper authentication-basic container-p-y">
         <div className="authentication-inner">
           {/* Register */}
@@ -106,8 +134,7 @@ const Login = () => {
               <form
                 id="formAuthentication"
                 className="mb-3"
-                action="index.html"
-                method="POST"
+                onSubmit={handleSubmit(submitForm)}
               >
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
@@ -118,6 +145,7 @@ const Login = () => {
                     className="form-control"
                     id="email"
                     name="email-username"
+                    {...register("email")}
                     placeholder="Enter your email or username"
                     autofocus
                   />
@@ -137,6 +165,7 @@ const Login = () => {
                       id="password"
                       className="form-control"
                       name="password"
+                      {...register("password")}
                       placeholder="············"
                       aria-describedby="password"
                     />
@@ -163,7 +192,7 @@ const Login = () => {
                     className="btn btn-primary d-grid w-100"
                     type="submit"
                   >
-                    Sign in
+                    {loading ? "Loading...":"Sign in"}
                   </button>
                 </div>
               </form>

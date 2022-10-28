@@ -1,9 +1,47 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import axios from 'axios';
+import { BASE_URL } from '../config/config';
 
 const Dashboard = () => {
+  const { userInfo } = useSelector((state) => state.user);
+  
+  const [loading, setLoading] = useState(false)
+  const [payments, setPayments] = useState([])
+  const [housess, setHouses] = useState([])
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (userInfo?.roles[0] !== "AreaCoordinator") {
+      navigate("/house");
+    }
+    getPaymentDetails();
+    getHouses()
+  }, [userInfo]);
+
+
+  const getPaymentDetails = () => {
+    axios.get(`${BASE_URL}Payment/allsub?houseId=${userInfo.houseKey}`)
+    .then((response)=>{
+      console.log('=========================paym===========');
+      console.log(response);
+      console.log('====================================');
+      setPayments(response.data)
+    })
+    .catch(error=> console.log(error))
+  }
+
+  const getHouses = () => {
+    axios
+      .get(`${BASE_URL}House/zone?zoneId=${userInfo.zoneId}`)
+      .then((response) => {
+         setHouses(response.data.returnObj);
+      })
+      .catch((error) => console.log(error));
+  }
 
   const DATA = [
     {
@@ -33,7 +71,6 @@ const Dashboard = () => {
       bg: "bg-success",
       dueDate: "2023-01-03",
     },
-    
   ];
 
   return (
@@ -50,17 +87,17 @@ const Dashboard = () => {
           {/* Content wrapper */}
           <div className="content-wrapper">
             {/* Content */}
-            
+
             <div className="container-xxl flex-grow-1 container-p-y">
               <div className="row">
-              <h5 className="pb-1 mb-4">This Month</h5>
+                <h5 className="pb-1 mb-4">This Month</h5>
                 <div className="col-lg-8 mb-4 order-0">
                   <div className="card">
                     <div className="d-flex align-items-end row">
                       <div className="col-sm-7">
                         <div className="card-body">
                           <h5 className="card-title text-primary">
-                            Congratulations John! 🎉
+                            Good Day, {userInfo?.userBio}! 🎉
                           </h5>
                           <p className="mb-4">
                             You have done <span className="fw-bold">72%</span>{" "}
@@ -132,9 +169,7 @@ const Dashboard = () => {
                               </div>
                             </div>
                           </div>
-                          <span className="fw-semibold d-block mb-1">
-                            Paid
-                          </span>
+                          <span className="fw-semibold d-block mb-1">Paid</span>
                           <h3 className="card-title mb-2">$12,628</h3>
                           <small className="text-success fw-semibold">
                             <i className="bx bx-up-arrow-alt" /> +72.80%
@@ -198,31 +233,31 @@ const Dashboard = () => {
                 {/* Total Revenue */}
                 <div className="col-12 col-lg-8 order-2 order-md-3 order-lg-2 mb-4">
                   <div className="card p-3">
-                      <div className="col-md-12">
-                        <h5 className="card-header m-0"> My House Payments </h5>
-                        <div className="row">
-                            {DATA.map((item, i) => (
-                              <div className="col-md-6 col-xl-4" key={i}>
-                                <div className={`card text-white mb-3 ${item.bg}`}>
-                                  <div className="card-header">{item.amount}</div>
-                                  <div className="card-body">
-                                    <h5 className="card-title text-white">
-                                      {item.title} - <small>{item.dueDate}</small>
-                                    </h5>
-                                    {/* <p className="card-text">{item.description}</p> */}
-                                  </div>
-                                  <a
-                                    href="https://afeexclusive.github.io/oilandgas/seerbitpay.html?s=7be446b8-4d7f-4355-8a2c-8abc3448124f&h=7be446b8-4d7f-4355-8a2c-8abc3448124f&i=7be446b8-4d7f-4355-8a2c-8abc3448124f&cn=Afe&pr=650"
-                                    className="btn btn-sm btn-primary m-3 p-1"
-                                  >
-                                    Pay
-                                  </a>
-                                </div>
+                    <div className="col-md-12">
+                      <h5 className="card-header m-0"> My House Payments </h5>
+                      <div className="row">
+                        {DATA.map((item, i) => (
+                          <div className="col-md-6 col-xl-4" key={i}>
+                            <div className={`card text-white mb-3 ${item.bg}`}>
+                              <div className="card-header">{item.amount}</div>
+                              <div className="card-body">
+                                <h5 className="card-title text-white">
+                                  {item.title} - <small>{item.dueDate}</small>
+                                </h5>
+                                {/* <p className="card-text">{item.description}</p> */}
                               </div>
-                            ))}
+                              <a
+                                href="https://afeexclusive.github.io/oilandgas/seerbitpay.html?s=7be446b8-4d7f-4355-8a2c-8abc3448124f&h=7be446b8-4d7f-4355-8a2c-8abc3448124f&i=7be446b8-4d7f-4355-8a2c-8abc3448124f&cn=Afe&pr=650"
+                                className="btn btn-sm btn-primary m-3 p-1"
+                              >
+                                Pay
+                              </a>
+                            </div>
                           </div>
+                        ))}
                       </div>
-                      </div>
+                    </div>
+                  </div>
                 </div>
                 {/*/ Total Revenue */}
                 <div className="col-12 col-md-8 col-lg-4 order-3 order-md-2">
@@ -269,9 +304,7 @@ const Dashboard = () => {
                             </div>
                           </div>
                           <span className="d-block mb-1">People oweing</span>
-                          <h3 className="card-title text-nowrap mb-2">
-                            2,456
-                          </h3>
+                          <h3 className="card-title text-nowrap mb-2">2,456</h3>
                           <small className="text-danger fw-semibold">
                             <i className="bx bx-down-arrow-alt" /> -14.82%
                           </small>
@@ -333,6 +366,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+             
               <div className="row">
                 {/* Order Statistics */}
                 <div className="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
@@ -348,28 +382,23 @@ const Dashboard = () => {
                               <th>Action</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            <tr>
-                              <th scope="row">1</th>
-                              <td>Baale House</td>
+                        <tbody>
+   
+  
+                            {/* houses data */}
+                           {housess?.map((er,i)=>(
+                            <tr key={i}>
+                              <th scope="row">{i+1}</th>
+                              <td>{er.houseRepName}</td>
                               <td>
-                              <a href="/list">Details</a>
+                                <Link to={`/list/${er.id}`}>Details</Link>
                               </td>
                             </tr>
-                            <tr>
-                              <th scope="row">2</th>
-                              <td>Mr Oribako</td>
-                              <td>Details</td>
-                            </tr>
-                            <tr>
-                              <th scope="row">3</th>
-                              <td>Mr Igbimo House</td>
-                              <td>Details</td>
-                            </tr>
+                           ))} 
                           </tbody>
                         </table>
                       </div>
-                  </div>
+                    </div>
                   </div>
                 </div>
                 {/*/ Order Statistics */}
@@ -394,9 +423,19 @@ const Dashboard = () => {
                       </ul>
                       <br />
                       <div>
-                      <label htmlFor="exampleFormControlTextarea1" className="form-label">Enter your message here</label>
-                      <textarea className="form-control" id="exampleFormControlTextarea1" rows={15} defaultValue={""} />
-                    </div>
+                        <label
+                          htmlFor="exampleFormControlTextarea1"
+                          className="form-label"
+                        >
+                          Enter your message here
+                        </label>
+                        <textarea
+                          className="form-control"
+                          id="exampleFormControlTextarea1"
+                          rows={15}
+                          defaultValue={""}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -405,7 +444,9 @@ const Dashboard = () => {
                 <div className="col-md-6 col-lg-4 order-2 mb-4">
                   <div className="card h-100">
                     <div className="card-header d-flex align-items-center justify-content-between">
-                      <h5 className="card-title m-0 me-2">Transactions - Print receipt</h5>
+                      <h5 className="card-title m-0 me-2">
+                        Transactions - Print receipt
+                      </h5>
                       <div className="dropdown">
                         <button
                           className="btn p-0"

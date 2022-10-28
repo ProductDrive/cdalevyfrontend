@@ -1,6 +1,22 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { getUserDetails } from "../features/user/userActions";
+import { logout } from "../features/user/userSlice";
 
 const Navbar = () => {
+  const { userInfo, userToken } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // automatically authenticate user if token is found
+  useEffect(() => {
+    
+  }, [userToken, dispatch]);
+  const logoutHandler =() => {
+   dispatch(logout());
+     navigate('/login');
+  }
+
   return (
     <nav
       className="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
@@ -54,8 +70,8 @@ const Navbar = () => {
                       </div>
                     </div>
                     <div className="flex-grow-1">
-                      <span className="fw-semibold d-block">John Doe</span>
-                      <small className="text-muted">Admin</small>
+                      {userInfo &&(
+                      <span className="fw-semibold d-block">{userInfo?.userBio}</span>)}
                     </div>
                   </div>
                 </a>
@@ -66,31 +82,22 @@ const Navbar = () => {
               <li>
                 <a className="dropdown-item" href="#">
                   <i className="bx bx-user me-2" />
+                  <span className="align-middle">{userInfo?.zone}</span>
+                </a>
+              </li>
+              <li>
+                <a className="dropdown-item" href="#">
+                  <i className="bx bx-user me-2" />
                   <span className="align-middle">My Profile</span>
                 </a>
               </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  <i className="bx bx-cog me-2" />
-                  <span className="align-middle">Settings</span>
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  <span className="d-flex align-items-center align-middle">
-                    <i className="flex-shrink-0 bx bx-credit-card me-2" />
-                    <span className="flex-grow-1 align-middle">Billing</span>
-                    <span className="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">
-                      4
-                    </span>
-                  </span>
-                </a>
-              </li>
+             
+              
               <li>
                 <div className="dropdown-divider" />
               </li>
               <li>
-                <a className="dropdown-item" href="auth-login-basic.html">
+                <a className="dropdown-item" href="#" onClick={logoutHandler}>
                   <i className="bx bx-power-off me-2" />
                   <span className="align-middle">Log Out</span>
                 </a>

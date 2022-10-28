@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux';
 
 const Sidebar = () => {
+  const { userInfo } = useSelector((state) => state.user);
+  useEffect(() => {}, [userInfo]);
+
   return (
     <aside
       id="layout-menu"
@@ -99,20 +103,39 @@ const Sidebar = () => {
       <div className="menu-inner-shadow" style={{ display: "block" }} />
       <ul className="menu-inner py-1 ps ps--active-y">
         {/* Dashboard */}
-        <li className="menu-item">
-          <a href="/" className="menu-link">
-            <i className="menu-icon tf-icons bx bx-home-circle" />
-            <div data-i18n="Analytics">Dashboard</div>
-          </a>
-        </li>
+        {userInfo?.roles[0] !== "AreaCoordinator" && (
+          <li className="menu-item">
+            <a href="/house" className="menu-link">
+              <i className="menu-icon tf-icons bx bx-home-circle" />
+              <div data-i18n="Analytics">Dashboard</div>
+            </a>
+          </li>
+        )}
+        {userInfo?.roles[0] === "AreaCoordinator" && (
+          <>
+            <li className="menu-item">
+              <a href="/" className="menu-link">
+                <i className="menu-icon tf-icons bx bx-home-circle" />
+                <div data-i18n="Analytics">Dashboard</div>
+              </a>
+            </li>
 
-        <li className="menu-item">
-          <a href="/list" className="menu-link">
-            <i className="menu-icon tf-icons bx bx-user-circle" />
-            <div data-i18n="Analytics">Houses</div>
-          </a>
-        </li>
-       
+            
+            <li className="menu-item">
+              <a href="/add-house" className="menu-link">
+                <i className="menu-icon tf-icons bx bx-user-circle" />
+                <div data-i18n="Analytics">Add House</div>
+              </a>
+            </li>
+            
+            <li className="menu-item">
+              <a href="/add-payment" className="menu-link">
+                <i className="menu-icon tf-icons bx bx-user-circle" />
+                <div data-i18n="Analytics">Add Payment Item</div>
+              </a>
+            </li>
+          </>
+        )}
       </ul>
     </aside>
   );

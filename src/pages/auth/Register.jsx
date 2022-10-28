@@ -1,6 +1,39 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../../features/user/userActions";
+import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
+
 
 const Register = () => {
+
+  const { loading, userInfo, error, success } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+const navigate = useNavigate();
+  const { register, handleSubmit } = useForm();
+
+  useEffect(() => {
+    // redirect user to login page if registration was successful
+    if (success) navigate("/login");
+    // redirect authenticated user to profile screen
+    if (userInfo) navigate("/dashbaord");
+  }, [navigate, userInfo, success,error]);
+
+
+  const submitForm = (data) => {
+    // check if passwords match
+    if (data.password !== data.cpassword) {
+      alert("Password mismatch");
+      return;
+    }
+    // transform email string to lowercase to avoid case sensitivity issues during login
+    data.email = data.email.toLowerCase();
+
+console.log("data", data);
+    dispatch(registerUser(data));
+    
+  };
+
   return (
     <div className="container-xxl" style={{ width: "35%" }}>
       <div className="authentication-wrapper authentication-basic container-p-y">
@@ -103,12 +136,83 @@ const Register = () => {
               <p className="mb-4">
                 Manage your levies and payment with timely reminders!
               </p>
+              {error?.map((er, i) => (
+                <p className="text-danger">{er}</p>
+              ))}
               <form
                 id="formAuthentication"
                 className="mb-3"
-                action="index.html"
-                method="POST"
+                onSubmit={handleSubmit(submitForm)}
               >
+                <div className="mb-3">
+                  <label htmlFor="firstName" className="form-label">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="firstName"
+                    placeholder="Enter your firstName"
+                    {...register("firstName")}
+                    required
+                  />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="lastname" className="form-label">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="lastname"
+                    placeholder="Enter your lastname"
+                    {...register("lastName")}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="House Address" className="form-label">
+                    houseAddress
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="houseAddress"
+                    placeholder="Enter your house Address"
+                    {...register("houseAddress")}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="zoneName" className="form-label">
+                    Zone Name
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="zoneName"
+                    placeholder="Enter your Zone Name"
+                    {...register("zoneName")}
+                    required
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label htmlFor="phoneNumber" className="form-label">
+                    Phone
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="phoneNumber"
+                    placeholder="Enter your Phone"
+                    {...register("phoneNumber")}
+                    required
+                  />
+                </div>
+
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
                     Email
@@ -119,6 +223,8 @@ const Register = () => {
                     id="email"
                     name="email"
                     placeholder="Enter your email"
+                    {...register("email")}
+                    required
                   />
                 </div>
                 <div className="mb-3 form-password-toggle">
@@ -131,6 +237,7 @@ const Register = () => {
                       id="password"
                       className="form-control"
                       name="password"
+                      {...register("password")}
                       placeholder="············"
                       aria-describedby="password"
                     />
@@ -149,6 +256,7 @@ const Register = () => {
                       id="password"
                       className="form-control"
                       name="password"
+                      {...register("cpassword")}
                       placeholder="············"
                       aria-describedby="password"
                     />
@@ -157,27 +265,9 @@ const Register = () => {
                     </span>
                   </div>
                 </div>
-                <div className="mb-3">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="terms-conditions"
-                      name="terms"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="terms-conditions"
-                    >
-                      I agree to
-                      <a href="javascript:void(0);">
-                        privacy policy &amp; terms
-                      </a>
-                    </label>
-                  </div>
-                </div>
+
                 <button className="btn btn-primary d-grid w-100">
-                  Sign up
+                  {loading ? "Loading" : "Sign up"}
                 </button>
               </form>
               <p className="text-center">
