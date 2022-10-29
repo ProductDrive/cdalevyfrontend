@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 import { BASE_URL } from '../config/config';
+import moment from 'moment';
 
 const Dashboard = () => {
   const { userInfo } = useSelector((state) => state.user);
@@ -26,9 +27,6 @@ const Dashboard = () => {
   const getPaymentDetails = () => {
     axios.get(`${BASE_URL}Payment/allsub?houseId=${userInfo.houseKey}`)
     .then((response)=>{
-      console.log('=========================paym===========');
-      console.log(response);
-      console.log('====================================');
       setPayments(response.data)
     })
     .catch(error=> console.log(error))
@@ -43,35 +41,9 @@ const Dashboard = () => {
       .catch((error) => console.log(error));
   }
 
-  const DATA = [
-    {
-      id: 1,
-      title: "Security",
-      description:
-        "Some quick example text to build on the card title and make up.",
-      amount: "NGN 1,000",
-      bg: "bg-warning",
-      dueDate: "2022-12-03",
-    },
-    {
-      id: 2,
-      title: "Light",
-      description:
-        "Some quick example text to build on the card title and make up.",
-      amount: "NGN 4,000",
-      bg: "bg-danger",
-      dueDate: "2022-10-23",
-    },
-    {
-      id: 3,
-      title: "Water",
-      description:
-        "Some quick example text to build on the card title and make up.",
-      amount: "NGN 500",
-      bg: "bg-success",
-      dueDate: "2023-01-03",
-    },
-  ];
+  const priceSplitter = (number) =>
+    number && number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
 
   return (
     <div className="layout-wrapper layout-content-navbar">
@@ -235,27 +207,43 @@ const Dashboard = () => {
                   <div className="card p-3">
                     <div className="col-md-12">
                       <h5 className="card-header m-0"> My House Payments </h5>
-                      <div className="row">
-                        {DATA.map((item, i) => (
-                          <div className="col-md-6 col-xl-4" key={i}>
-                            <div className={`card text-white mb-3 ${item.bg}`}>
-                              <div className="card-header">{item.amount}</div>
-                              <div className="card-body">
-                                <h5 className="card-title text-white">
-                                  {item.title} - <small>{item.dueDate}</small>
-                                </h5>
-                                {/* <p className="card-text">{item.description}</p> */}
-                              </div>
-                              <a
-                                href="https://afeexclusive.github.io/oilandgas/seerbitpay.html?s=7be446b8-4d7f-4355-8a2c-8abc3448124f&h=7be446b8-4d7f-4355-8a2c-8abc3448124f&i=7be446b8-4d7f-4355-8a2c-8abc3448124f&cn=Afe&pr=650"
-                                className="btn btn-sm btn-primary m-3 p-1"
+                      {payments.length > 0 ? (
+                        <div className="row">
+                          {payments.map((item, i) => (
+                            <div className="col-md-6 col-xl-4" key={i}>
+                              <div
+                                className={`card text-white mb-3 ${item.cardColour}`}
                               >
-                                Pay
-                              </a>
+                                <div className="card-header">
+                                  Amount: {priceSplitter(item.amount)}
+                                </div>
+                                <div className="card-body">
+                                  <h5 className="card-title text-white">
+                                    {item.title}
+                                  </h5>
+                                  <small>
+                                    {moment(item.dueDate).format(" Do-MM-YYYY")}
+                                  </small>
+                                  <p className="card-text">
+                                    {item.description}
+                                  </p>
+                                </div>
+                                <a
+                                  href={item.paymentlink}
+                                  target="_blank"
+                                  className="btn btn-sm btn-primary m-3 p-1"
+                                >
+                                  Pay
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="row">
+                          <div className="col-sm-12">No payment Available</div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -366,7 +354,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-             
+
               <div className="row">
                 {/* Order Statistics */}
                 <div className="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
@@ -382,19 +370,23 @@ const Dashboard = () => {
                               <th>Action</th>
                             </tr>
                           </thead>
-                        <tbody>
-   
-  
+                          <tbody>
                             {/* houses data */}
-                           {housess?.map((er,i)=>(
-                            <tr key={i}>
-                              <th scope="row">{i+1}</th>
-                              <td>{er.houseRepName}</td>
-                              <td>
-                                <Link to={`/list/${er.id}`}>Details</Link>
-                              </td>
-                            </tr>
-                           ))} 
+                            {housess?.map((er, i) => (
+                              <tr key={i}>
+                                <th scope="row">{i + 1}</th>
+                                <td>{er.houseRepName}</td>
+                                <td>
+                                  <Link
+                                    to={`/list/${er.id}`}
+                                    state={{ data: er.houseRepName }}
+                                    className="btn btn-sm btn-warning text-white"
+                                  >
+                                    Details
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
                           </tbody>
                         </table>
                       </div>

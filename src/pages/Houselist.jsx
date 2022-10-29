@@ -81,7 +81,7 @@ const Houselist = () => {
                   <br />
 
                   {/* Payment Items*/}
-                  <h5 className="pb-1 mb-4">Baale HouseHold</h5>
+                  <h5 className="pb-1 mb-4">{location.state.data}</h5>
                   <div className="row">
                     {DATA.map((item, i) => (
                       <div className="col-md-4 col-xl-3" key={i}>
@@ -93,7 +93,7 @@ const Houselist = () => {
                           </div>
                           <div className="card-body">
                             <h5 className="card-title text-white">
-                              item.title
+                              {item.title}
                             </h5>
                             <small>
                               {moment(item.dueDate).format(" Do-MM-YYYY")}
@@ -122,7 +122,7 @@ const Houselist = () => {
                                 }
                                 className="btn btn-sm btn-primary"
                               >
-                                {loading? 'Loading...':'Mark as Paid'}
+                                {loading ? "Loading..." : "Mark as Paid"}
                               </a>
                             </div>
                           </div>

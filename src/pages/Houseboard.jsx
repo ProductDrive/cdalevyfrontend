@@ -24,6 +24,7 @@ useEffect(() => {
       .get(`${BASE_URL}Payment/allsub?houseId=${userInfo.houseKey}`)
       .then((response) => {
         setPayments(response.data);
+        console.log("------------------ response", response);
       })
       .catch((error) => console.log(error));
   };
@@ -81,35 +82,41 @@ useEffect(() => {
 
                   {/* Payment Items*/}
                   <h5 className="pb-1 mb-4">Payment Items</h5>
-                  <div className="row">
-                    {payments.map((item, i) => (
-                      <div className="col-md-6 col-xl-4" key={i}>
-                        <div
-                          className={`card text-white mb-3 ${item.cardColour}`}
-                        >
-                          <div className="card-header">
-                            Amount: {priceSplitter(item.amount)}
-                          </div>
-                          <div className="card-body">
-                            <h5 className="card-title text-white">
-                              item.title
-                            </h5>
-                            <small>
-                              {moment(item.dueDate).format(" Do-MM-YYYY")}
-                            </small>
-                            <p className="card-text">{item.description}</p>
-                          </div>
-                          <a
-                            href={item.paymentlink}
-                            target="_blank"
-                            className="btn btn-sm btn-primary m-3 p-1"
+                  {payments.length >0 ? (
+                    <div className="row">
+                      {payments?.map((item, i) => (
+                        <div className="col-md-6 col-xl-4" key={i}>
+                          <div
+                            className={`card text-white mb-3 ${item.cardColour}`}
                           >
-                            Pay
-                          </a>
+                            <div className="card-header">
+                              Amount: {priceSplitter(item.amount)}
+                            </div>
+                            <div className="card-body">
+                              <h5 className="card-title text-white">
+                                {item.title}
+                              </h5>
+                              <small>
+                                {moment(item.dueDate).format(" Do-MM-YYYY")}
+                              </small>
+                              <p className="card-text">{item.description}</p>
+                            </div>
+                            <a
+                              href={item.paymentlink}
+                              target="_blank"
+                              className="btn btn-sm btn-primary m-3 p-1"
+                            >
+                              Pay
+                            </a>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="row">
+                      <div className="col-sm-12">No Payments Available</div>
+                    </div>
+                  )}
                   {/* Payment Items*/}
                 </div>
                 <div className="col-lg-4 col-md-4 order-1">
